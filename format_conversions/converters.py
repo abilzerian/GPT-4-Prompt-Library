@@ -12,9 +12,13 @@ GLOBAL_USER_ID = 1
 
 class BaseMetadata(BaseModel):
     title: str = Field(...)
-    tags: list[str] = Field(...)
-    categories: list[str] = Field(...)
-    user_id: int = Field(...)
+    tags: list[str] = Field(default_factory=list)
+    categories: list[str] = Field(default_factory=list)
+    user_id: int = Field(default_factory=lambda: GLOBAL_USER_ID)
+
+
+def convert_datetime_to_custom_format(dt: datetime) -> str:
+    return dt.strftime('%Y-%m-%d %H:%M:%S')
 
 
 class PromptData(BaseMetadata):
@@ -24,6 +28,9 @@ class PromptData(BaseMetadata):
 
     class Config:
         validate_assignment = True
+        json_encoders = {
+            datetime: convert_datetime_to_custom_format
+        }
 
     def __setattr__(self, name, value):
         super().__setattr__(name, value)
@@ -45,23 +52,24 @@ class FileReader:
             self.data = self.read_strategy(file)
         return self
 
-    def process(self, metadata: dict | None) -> PromptData | None:
-        if not metadata:
-            metadata = {
-                "title": self.file_path.split('/')[-1].split('.')[0] if self.file_path else "No Title",
-                'tags': [],
-                "categories": [],
-                "user": GLOBAL_USER_ID,
-            }
+    def process(
+            self,
+            data: dict | None,
+            content: str | None = None,
+    ) -> PromptData | None:
+        if not data:
+            data = {"title": self.file_path.split('/')[-1].split('.')[0] if self.file_path else "No Title"}
 
         try:
-            BaseMetadata(**metadata)  # Check if metadata is valid
+            BaseMetadata(**data)  # Check if metadata is valid
         except ValidationError as e:
             print(f"Invalid metadata: {e}")
             return None
 
-        metadata['content'] = self.data
-        return PromptData(**metadata)
+        if content:
+            self.data = content
+        data['content'] = self.data
+        return PromptData(**data)
 
 
 class FileReaderFactory:
@@ -97,18 +105,15 @@ class FileWriter:
         self.file_path = file_path
         self.data = data
 
-    def write(self, data: dict | PromptData | None = None, file_path: str | None = None):
+    def write(self, data: PromptData | None = None, file_path: str | None = None):
         if file_path:
             self.file_path = file_path
 
         if data:
             self.data = data
 
-        if not isinstance(self.data, dict):
-            self.data = dict(self.data)
-
         with open(self.file_path, 'w') as file:
-            json.dump(self.data, file)
+            file.write(self.data.json())
 
 
 def process_markdown(markdown_content):
