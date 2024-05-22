@@ -130,6 +130,14 @@ def process_markdown(markdown_content):
     return title, content
 
 
+def process_json(json_data):
+    return json_data
+
+
+def process_plain_text(text_content):
+    return text_content
+
+
 if __name__ == '__main__':
     from pprint import pprint
     # Test the prompt class
