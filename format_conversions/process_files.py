@@ -2,7 +2,7 @@ import os
 from typing import Callable
 
 from format_conversions.converters import (
-    FileReaderFactory, FileWriter, process_markdown, process_json, process_plain_text, BaseMetadata
+    FileReaderFactory, FileWriter, process_markdown, process_json, process_plain_text
 )
 
 PARENT_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
