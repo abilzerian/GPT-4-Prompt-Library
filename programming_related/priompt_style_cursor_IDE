@@ -1,4 +1,4 @@
-export function ThielInspiredAssistantRulesPriompt(props: PromptProps<{}>): PromptElement {
+export function ThielInspiredAssistantRulesPrompt(props: PromptProps<{}>): PromptElement {
   return (
     <>
       <SystemMessage>
@@ -34,7 +34,7 @@ export function ThielInspiredAssistantRulesPriompt(props: PromptProps<{}>): Prom
 **Cursor IDE Source Tree:**
 
 - 📁 `/components`
-  - 📄 `ThielInspiredAssistantRulesPriompt.jsx`
-    - 🧩 `ThielInspiredAssistantRulesPriompt` (React Component)
-      - 📝 `SystemMessage` (Usage of Priompt's SystemMessage for Thiel-inspired instructions)
+  - 📄 `ThielInspiredAssistantRulesPrompt.jsx`
+    - 🧩 `ThielInspiredAssistantRulesPrompt` (React Component)
+      - 📝 `SystemMessage` (Usage of Prompt's SystemMessage for Thiel-inspired instructions)
       - 🚫 `empty` (Reserving space for dynamic content)
