@@ -3,11 +3,15 @@ import json
 import re
 from typing import Callable, IO
 
+from bs4 import BeautifulSoup
+
 import markdown
 from pydantic import BaseModel, Field, ValidationError
 
 NOW_FACTORY = datetime.now
 GLOBAL_USER_ID = 1
+NO_TITLE_PLACEHOLDER = "No Title"
+NO_CONTENT_PLACEHOLDER = "No Content"
 
 
 class BaseMetadata(BaseModel):
@@ -58,7 +62,7 @@ class FileReader:
             content: str | None = None,
     ) -> PromptData | None:
         if not data:
-            data = {"title": self.file_path.split('/')[-1].split('.')[0] if self.file_path else "No Title"}
+            data = {"title": self.file_path.split('/')[-1].split('.')[0] if self.file_path else NO_TITLE_PLACEHOLDER}
 
         try:
             BaseMetadata(**data)  # Check if metadata is valid
@@ -118,24 +122,37 @@ class FileWriter:
 
 def process_markdown(markdown_content):
     title_match = re.search(r'<h1>(.*?)</h1>', markdown_content)
-    title = title_match.group(1) if title_match else 'No Title'
+    title = title_match.group(1) if title_match else NO_TITLE_PLACEHOLDER
 
-    # Extract the content inside <p><code> tags
-    content_match = re.search(r'<p><code>(.*?)</code></p>', markdown_content, re.DOTALL)
-    content = content_match.group(1) if content_match else 'No Content'
+    # Parse the content and remove the Markdown tags
+    soup = BeautifulSoup(markdown_content, 'lxml')
+    content = soup.get_text()
 
-    # Clean the 'markdown' indicator if present
-    content = re.sub(r'^markdown\n', '', content)
+    # Clean the 'markdown' indicator and title, if present
+    content = content.replace(title, '', 1).strip()
+    content = content.replace('markdown\n', '', 1).strip()
+    content = content.replace("```", "").strip()
+
+    if not content:
+        content = NO_CONTENT_PLACEHOLDER
 
     return title, content
 
 
 def process_json(json_data):
-    return json_data
+    """Process json files and return the content.
+
+        Returns No Title so that the title can be set to the filename downstream.
+        """
+    return NO_TITLE_PLACEHOLDER, json.dumps(json_data)
 
 
 def process_plain_text(text_content):
-    return text_content
+    """Process plain text files and return the content.
+
+    Returns No Title so that the title can be set to the filename downstream.
+    """
+    return NO_TITLE_PLACEHOLDER, text_content
 
 
 if __name__ == '__main__':
