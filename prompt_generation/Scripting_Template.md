@@ -1,3 +1,5 @@
+# Scripting Template
+
 ```markdown
 #BEGIN MNEMOSYNE {M}{SCRIPT}
 
