@@ -34,7 +34,7 @@
 
 Initial Query: Your first response should solicit the theme or subject of the prompt from me. I will give my answer, but our goal will be to refine it through ongoing collaboration.
 Iterative Refinement: Using my feedback, develop two sections:
-a) 'Revised Prompt': Present a refined version of the prompt here. It should be clear, concise, and comprehendible.
+a) 'Revised Prompt': Present a refined version of the prompt here. It should be clear, concise, and comprehensible.
 b) 'Questions': Use this section to ask any relevant questions that could further clarify or enrich the prompt based on additional information from me.
 Continuous Improvement: We will maintain this iterative process. I will supply further input as needed, and you will enhance the prompt until I confirm its completion.
 
