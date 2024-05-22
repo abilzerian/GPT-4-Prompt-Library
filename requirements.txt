@@ -1,2 +1,4 @@
 pydantic
 markdown
+beautifulsoup4
+lxml
