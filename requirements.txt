@@ -2,3 +2,7 @@ pydantic
 markdown
 beautifulsoup4
 lxml
+openai==1.30.2
+pandas==2.2.2
+python-dotenv
+requests
